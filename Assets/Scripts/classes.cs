@@ -21,12 +21,6 @@ public class classes : MonoBehaviour
 		// Setting the ability Lists
 		List<string> abilityDescriptions = new List<string>();
 		
-		// Collision handler, make sure that damage is input, and isCollided and collidedPlayer are brought out through the function.
-		public void attackCollision(bool isCollided, fighterClasses collidedPlayer, int atkDamage){
-			if (isCollided == true) {
-				collidedPlayer.currentHealth -= atkDamage;
-			}
-		}
 	}
 	public class meleeClass : fighterClasses{
 		// Setting variables
@@ -34,21 +28,38 @@ public class classes : MonoBehaviour
 		private int atkDamage = 25;
 		
 		// Declaring the attack ability, ShinySword has the property of launching the player directly downwards so if the player is aerial.
-		void ShinySword(bool air, bool isCollided, fighterClasses collidedPlayer){
+		void ShinySword(bool air, bool isCollided){
 			if (air == true) {
 				this.velocity = -20;
 			}
-			attackCollision(isCollided, collidedPlayer, atkDamage);
 		}
 	}
 	public class magicClass : fighterClasses {
 		private int atkDamage = 20;
+		
+		public Transform snowballPrefab;
+		public float snowballSpeed = 3f;
+		public float snowballDistance = 10f;
+		private float sphereRadius = 0.5f;
 				
-		void fireball(bool isCollided, string[] collidedPlayers, int distance){
+		void fireball(bool isCollided, int distance){
 			
 		}
-		void snowball(bool isCollided, string[] collidedPlayers, string[] collidedTraps){
-			attackCollision(isCollided, collidedPlayers, atkDamage);
+		void snowball(Vector3 startPosition, Quaternion rotation){
+			Transform snowballProjectile;
+			snowballProjectile = Instantiate(snowballPrefab, startPosition, rotation);
+			
+			while (snowballProjectile.position.z <= snowballDistance) {
+				if (Physics.CheckSphere(snowballProjectile.transform.position, sphereRadius)){
+					Destroy(snowballProjectile, 1);
+					break;
+				}
+				snowballProjectile.transform.position += new Vector3(0, 0, 0.01f);
+				void OnTriggerEnter(Collider other){
+					Destroy(snowballProjectile, 2);
+					other
+				}
+			}
 		}
 	}
 	public class techClass : fighterClasses {
